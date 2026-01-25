@@ -17,9 +17,7 @@
 
 ## Demo
 
-https://github.com/user-attachments/assets/YOUR_VIDEO_ID
-
-> 💡 *Upload your demo video to GitHub (drag into issue/PR), then replace the URL above*
+https://github.com/user-attachments/assets/464622be-c855-42c6-bc9e-988350906d92
 
 ## Features
 
