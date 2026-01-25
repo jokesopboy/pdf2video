@@ -1,8 +1,25 @@
-# pdf2video
+<div align="center">
 
-Transform PDF documents into engaging video presentations with smooth animations.
+# 📄 pdf2video
 
-> Built with [Remotion](https://www.remotion.dev/) - the framework for creating videos programmatically using React.
+**Transform PDF documents into engaging video presentations with smooth animations.**
+
+[![MIT License](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
+[![React](https://img.shields.io/badge/React-18-blue.svg)](https://reactjs.org/)
+[![Remotion](https://img.shields.io/badge/Remotion-4.0-purple.svg)](https://www.remotion.dev/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue.svg)](https://www.typescriptlang.org/)
+
+[Features](#features) • [Quick Start](#quick-start) • [Configuration](#configuration) • [Demo](#demo)
+
+---
+
+</div>
+
+## Demo
+
+https://github.com/user-attachments/assets/YOUR_VIDEO_ID
+
+> 💡 *Upload your demo video to GitHub (drag into issue/PR), then replace the URL above*
 
 ## Features
 
@@ -133,7 +150,7 @@ Full control over the presentation flow:
 
 ## Example Configurations
 
-### Standard Mode (props.json)
+### Standard Mode
 
 ```json
 {
@@ -158,7 +175,7 @@ Full control over the presentation flow:
 }
 ```
 
-### Fan Mode (props-fan.json)
+### Fan Mode
 
 ```json
 {
@@ -240,6 +257,20 @@ Claude will:
 - [react-pdf](https://github.com/wojtekmaj/react-pdf) - PDF rendering
 - [pdfjs-dist](https://mozilla.github.io/pdf.js/) - PDF parsing
 - [Zod](https://zod.dev/) - Schema validation
+
+---
+
+<div align="center">
+
+## Author
+
+Created by **[@JinsFavorites](https://x.com/JinsFavorites)**
+
+If you find this useful, give it a ⭐️!
+
+[![Twitter Follow](https://img.shields.io/twitter/follow/JinsFavorites?style=social)](https://x.com/JinsFavorites)
+
+</div>
 
 ## License
 
