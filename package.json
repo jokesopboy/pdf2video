@@ -1,0 +1,43 @@
+{
+  "name": "pdf2video",
+  "version": "1.0.0",
+  "description": "Transform PDF documents into engaging video presentations with smooth animations",
+  "scripts": {
+    "dev": "remotion studio",
+    "build": "remotion bundle",
+    "render": "remotion render",
+    "upgrade": "remotion upgrade"
+  },
+  "keywords": [
+    "pdf",
+    "video",
+    "remotion",
+    "presentation",
+    "animation",
+    "react"
+  ],
+  "author": "",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "bugs": {
+    "url": ""
+  },
+  "homepage": "",
+  "devDependencies": {
+    "@remotion/bundler": "^4.0.409",
+    "@remotion/cli": "^4.0.409",
+    "@types/react": "^19.2.9",
+    "@types/react-dom": "^19.2.3",
+    "remotion": "^4.0.409",
+    "typescript": "^5.9.3"
+  },
+  "dependencies": {
+    "react": "^19.2.3",
+    "react-dom": "^19.2.3",
+    "react-pdf": "^10.3.0",
+    "zod": "^3.22.3"
+  }
+}

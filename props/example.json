@@ -1,0 +1,20 @@
+{
+  "src": "/sample.pdf",
+  "title": "Document Title",
+  "subtitle": "Key Insights",
+  "highlights": [1, 3, 5, 8, 12],
+  "pageTitles": {
+    "1": "Cover",
+    "3": "Overview",
+    "5": "Key Points",
+    "8": "Analysis",
+    "12": "Conclusion"
+  },
+  "pageDescriptions": {
+    "1": "Introduction to the document and its main objectives.",
+    "3": "A comprehensive overview of the key topics covered.",
+    "5": "The most important findings and insights.",
+    "8": "Detailed analysis of the data and results.",
+    "12": "Summary and conclusions with actionable recommendations."
+  }
+}
