@@ -1,4 +1,4 @@
-import { useCallback, useState, useRef } from "react";
+import { useCallback, useState, useRef, useEffect } from "react";
 import { continueRender, delayRender, staticFile, cancelRender } from "remotion";
 import { Document, Page, pdfjs } from "react-pdf";
 import "react-pdf/dist/Page/AnnotationLayer.css";
@@ -8,6 +8,21 @@ pdfjs.GlobalWorkerOptions.workerSrc = new URL(
   "pdfjs-dist/build/pdf.worker.min.mjs",
   import.meta.url
 ).toString();
+
+// Global PDF document cache to avoid repeated loading
+const pdfDocumentCache = new Map<string, Promise<pdfjs.PDFDocumentProxy>>();
+
+function getPdfDocument(src: string): Promise<pdfjs.PDFDocumentProxy> {
+  if (!pdfDocumentCache.has(src)) {
+    const loadingTask = pdfjs.getDocument({
+      url: src,
+      cMapUrl: "https://unpkg.com/pdfjs-dist@4.4.168/cmaps/",
+      cMapPacked: true,
+    });
+    pdfDocumentCache.set(src, loadingTask.promise);
+  }
+  return pdfDocumentCache.get(src)!;
+}
 
 interface PdfPageProps {
   src: string;
@@ -26,16 +41,28 @@ export const PdfPage: React.FC<PdfPageProps> = ({
   renderScale = 1,
   onLoadSuccess,
 }) => {
-  const [handle] = useState(() => delayRender(`Loading PDF page ${pageNumber}`));
+  const [handle] = useState(() => delayRender(`Loading PDF page ${pageNumber}`, { timeoutInMilliseconds: 60000 }));
   const [isVisible, setIsVisible] = useState(false);
+  const [pdfDocument, setPdfDocument] = useState<pdfjs.PDFDocumentProxy | null>(null);
   const renderCompleted = useRef(false);
 
-  const handleDocumentLoadSuccess = useCallback(
-    ({ numPages }: { numPages: number }) => {
-      onLoadSuccess?.(numPages);
-    },
-    [onLoadSuccess]
-  );
+  const pdfSrc = src.startsWith("/") ? staticFile(src.slice(1)) : src;
+
+  // Pre-load PDF document using cache
+  useEffect(() => {
+    getPdfDocument(pdfSrc)
+      .then((doc) => {
+        setPdfDocument(doc);
+        onLoadSuccess?.(doc.numPages);
+      })
+      .catch((error) => {
+        console.error("PDF load error:", error);
+        if (!renderCompleted.current) {
+          renderCompleted.current = true;
+          cancelRender(error);
+        }
+      });
+  }, [pdfSrc, onLoadSuccess]);
 
   const handlePageRenderSuccess = useCallback(() => {
     // Delay to ensure canvas content is fully rendered (including images)
@@ -49,22 +76,23 @@ export const PdfPage: React.FC<PdfPageProps> = ({
   }, [handle]);
 
   const handleError = useCallback((error: Error) => {
-    console.error("PDF error:", error);
+    console.error("PDF page render error:", error);
     if (!renderCompleted.current) {
       renderCompleted.current = true;
       cancelRender(error);
     }
   }, []);
 
-  const pdfSrc = src.startsWith("/") ? staticFile(src.slice(1)) : src;
+  // Wait for PDF document to load
+  if (!pdfDocument) {
+    return null;
+  }
 
   // Use devicePixelRatio to improve render resolution while keeping layout size unchanged
   return (
     <div style={{ opacity: isVisible ? 1 : 0 }}>
       <Document
         file={pdfSrc}
-        onLoadSuccess={handleDocumentLoadSuccess}
-        onLoadError={handleError}
         loading={null}
       >
         <Page

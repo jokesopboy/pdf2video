@@ -9,6 +9,7 @@ import { PersistentTitle } from "./PersistentTitle";
 import { BottomInfo } from "./BottomInfo";
 import { PdfShowcaseProps, ScriptItem } from "./types";
 import { EndingOverlay } from "./EndingOverlay";
+import { PdfPreloader } from "./PdfPreloader";
 
 export { PdfShowcaseSchema } from "./types";
 
@@ -52,26 +53,31 @@ export const PdfShowcase: React.FC<PdfShowcaseProps> = ({
     setTotalPages(numPages);
   }, []);
 
+  // Extract pages from script - computed once and cached
+  const scriptExtractedPages = useMemo(() => {
+    if (!customScript || customScript.length === 0) return null;
+    const scriptPages = customScript
+      .filter((item): item is typeof item & { page: number } => 'page' in item && typeof item.page === 'number')
+      .map(item => item.page);
+    return scriptPages.length > 0 ? [...new Set(scriptPages)] : null;
+  }, [customScript]);
+
   const availablePages = useMemo(() => {
+    // Priority 1: Explicit pages prop
     if (pages && pages.length > 0) {
       return pages;
     }
-    // If highlights provided, use them as display pages
+    // Priority 2: Pages extracted from script (before highlights!)
+    if (scriptExtractedPages) {
+      return scriptExtractedPages;
+    }
+    // Priority 3: Highlights
     if (highlights && highlights.length > 0) {
       return highlights;
     }
-    // Auto-extract pages from script if provided
-    if (customScript && customScript.length > 0) {
-      const scriptPages = customScript
-        .filter((item): item is typeof item & { page: number } => 'page' in item && typeof item.page === 'number')
-        .map(item => item.page);
-      if (scriptPages.length > 0) {
-        // Return unique pages in order of appearance
-        return [...new Set(scriptPages)];
-      }
-    }
+    // Fallback: All pages up to totalPages
     return Array.from({ length: totalPages }, (_, i) => i + 1);
-  }, [pages, highlights, customScript, totalPages]);
+  }, [pages, scriptExtractedPages, highlights, totalPages]);
 
   const script = useMemo(() => {
     if (customScript && customScript.length > 0) {
@@ -153,14 +159,15 @@ export const PdfShowcase: React.FC<PdfShowcaseProps> = ({
   );
 
   return (
-    <AbsoluteFill>
-      {/* Background music - fade in/out */}
-      <Audio src={staticFile("background.mp3")} volume={bgmVolume} />
-      <GridBackground
-        sceneType={currentScene.type}
-        sceneStartFrame={currentScene.startFrame}
-      />
-      {sequences.map((seq, seqIndex) => {
+    <PdfPreloader src={src} pages={availablePages}>
+      <AbsoluteFill>
+        {/* Background music - fade in/out */}
+        <Audio src={staticFile("background.mp3")} volume={bgmVolume} />
+        <GridBackground
+          sceneType={currentScene.type}
+          sceneStartFrame={currentScene.startFrame}
+        />
+        {sequences.map((seq, seqIndex) => {
         if (seq.type === "stack") {
           // Determine if this is opening or ending stack
           const isEnding = seqIndex === sequences.length - 1 && seqIndex > 0;
@@ -250,14 +257,15 @@ export const PdfShowcase: React.FC<PdfShowcaseProps> = ({
 
         return null;
       })}
-      {title && !isEndingStack && (
-        <PersistentTitle
-          title={title}
-          subtitle={subtitle}
-          sceneType={currentScene.type}
-          firstFocusFrame={firstFocusFrame}
-        />
-      )}
-    </AbsoluteFill>
+        {title && !isEndingStack && (
+          <PersistentTitle
+            title={title}
+            subtitle={subtitle}
+            sceneType={currentScene.type}
+            firstFocusFrame={firstFocusFrame}
+          />
+        )}
+      </AbsoluteFill>
+    </PdfPreloader>
   );
 };
