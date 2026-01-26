@@ -64,7 +64,7 @@ export const GridBackground: React.FC<GridBackgroundProps> = ({
         overflow: "hidden",
       }}
     >
-      {/* 网格线 */}
+      {/* Grid lines */}
       <svg
         width={width}
         height={height}
@@ -99,7 +99,7 @@ export const GridBackground: React.FC<GridBackgroundProps> = ({
         ))}
       </svg>
 
-      {/* 交叉点 */}
+      {/* Intersection dots */}
       <svg
         width={width}
         height={height}
@@ -153,7 +153,7 @@ export const GridBackground: React.FC<GridBackgroundProps> = ({
         )}
       </svg>
 
-      {/* 切换时的脉冲波纹 */}
+      {/* Pulse ripple on switch */}
       {sceneType === "switch" && pulseOpacity > 0 && (
         <div
           style={{
@@ -171,7 +171,7 @@ export const GridBackground: React.FC<GridBackgroundProps> = ({
         />
       )}
 
-      {/* 中心光晕 */}
+      {/* Center glow */}
       <div
         style={{
           position: "absolute",
@@ -186,7 +186,7 @@ export const GridBackground: React.FC<GridBackgroundProps> = ({
         }}
       />
 
-      {/* 聚焦时的额外光晕 */}
+      {/* Extra glow when focused */}
       {(sceneType === "focus" || sceneType === "switch" || sceneType === "fan") && (
         <div
           style={{

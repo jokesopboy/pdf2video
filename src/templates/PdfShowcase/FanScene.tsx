@@ -24,14 +24,14 @@ export const FanScene: React.FC<FanSceneProps> = ({
   const currentIndex = pages.indexOf(currentPage);
   const previousIndex = previousPage ? pages.indexOf(previousPage) : currentIndex;
 
-  // 入场动画：像打开扇子一样展开
+  // Entry animation: unfold like opening a fan
   const enterProgress = spring({
     frame,
     fps,
     config: { damping: 30, stiffness: 60, mass: 0.8 },
   });
 
-  // 旋转动画进度（入场完成后开始）
+  // Rotation animation progress (starts after entry completes)
   const rotateDelay = 20;
   const rotateProgress = spring({
     frame: frame - rotateDelay,
@@ -39,7 +39,7 @@ export const FanScene: React.FC<FanSceneProps> = ({
     config: { damping: 60, stiffness: 80 },
   });
 
-  // 聚焦页面放大动画（旋转完成后）
+  // Focus page zoom animation (after rotation completes)
   const focusDelay = 40;
   const focusProgress = spring({
     frame: frame - focusDelay,
@@ -47,30 +47,30 @@ export const FanScene: React.FC<FanSceneProps> = ({
     config: { damping: 80, stiffness: 100 },
   });
 
-  // 扇形参数
-  const fanRadius = 600; // 扇形半径
-  const anglePerCard = 18; // 每张卡片之间的角度
+  // Fan parameters
+  const fanRadius = 600; // Fan radius
+  const anglePerCard = 18; // Angle between each card
   const totalAngle = (pages.length - 1) * anglePerCard;
-  const startAngle = -totalAngle / 2; // 居中显示
+  const startAngle = -totalAngle / 2; // Center display
 
-  // 计算旋转偏移（从上一个页面转到当前页面）
+  // Calculate rotation offset (from previous page to current page)
   const indexDiff = currentIndex - previousIndex;
   const rotationOffset = interpolate(rotateProgress, [0, 1], [0, -indexDiff * anglePerCard]);
 
-  // 滚动在底部描述显示完成后开始
+  // Scroll starts after bottom description is shown
   const pdfHeight = focusWidth / pdfAspectRatio;
-  // 顶部边距
+  // Top margin
   const topMargin = 80;
   const maxScrollDistance = Math.max(0, pdfHeight - videoHeight + 100 + topMargin);
-  // 滚动在底部描述显示到 60% 时开始（enterDelay=35 + typingStart=20 + 60%打字时间≈20）
+  // Scroll starts when description reaches 60% (enterDelay=35 + typingStart=20 + 60% typing≈20)
   const scrollStartFrame = 70;
 
-  // 呼吸效果：滚动前轻微上下浮动
+  // Breathing effect: slight vertical float before scrolling
   const breatheOffset = frame < scrollStartFrame
     ? Math.sin(frame * 0.06) * 8
     : 0;
 
-  // 滚动偏移（缩短滚动时间，留出结尾停顿，带回弹效果）
+  // Scroll offset (shortened scroll time, leave pause at end, with bounce effect)
   const scrollDuration = 50;
   const scrollOffset = interpolate(
     frame,
@@ -87,16 +87,16 @@ export const FanScene: React.FC<FanSceneProps> = ({
         perspective: "1500px",
       }}
     >
-      {/* 扇形卡片 */}
+      {/* Fan cards */}
       {pages.map((pageNum, index) => {
         const isCurrent = pageNum === currentPage;
 
-        // 计算卡片在扇形中的最终角度
+        // Calculate card's final angle in the fan
         const baseAngle = startAngle + index * anglePerCard;
         const finalAngle = baseAngle + rotationOffset;
 
-        // 入场动画：像扇子一样从中心展开
-        // 角度从 0 展开到目标角度，形成扇形
+        // Entry animation: unfold from center like a fan
+        // Angle spreads from 0 to target angle, forming fan shape
         const angleProgress = interpolate(
           enterProgress,
           [0, 0.7, 1],
@@ -105,22 +105,22 @@ export const FanScene: React.FC<FanSceneProps> = ({
         );
         const currentAngle = finalAngle * angleProgress;
 
-        // 将角度转换为位置
+        // Convert angle to position
         const radians = (currentAngle * Math.PI) / 180;
         const x = Math.sin(radians) * fanRadius;
-        // 扇形从下方升起
+        // Fan rises from bottom
         const riseProgress = interpolate(enterProgress, [0, 0.5], [0, 1], { extrapolateRight: "clamp" });
         const baseY = Math.cos(radians) * fanRadius - fanRadius + 100;
         const y = interpolate(riseProgress, [0, 1], [200, baseY]);
 
-        // 卡片自身旋转跟随角度
+        // Card rotation follows angle
         const rotation = currentAngle * 0.8;
 
-        // 入场缩放：从堆叠状态展开
+        // Entry scale: unfold from stack state
         const enterScale = interpolate(enterProgress, [0, 0.6], [0.85, 1], { extrapolateRight: "clamp" });
         const enterOpacity = interpolate(enterProgress, [0, 0.2], [0, 1], { extrapolateRight: "clamp" });
 
-        // 根据角度计算最终缩放和透明度（中心的更大更清晰）
+        // Calculate final scale and opacity based on angle (center cards are larger and clearer)
         const distanceFromCenter = Math.abs(finalAngle);
         const baseScale = interpolate(distanceFromCenter, [0, 40, 90], [1, 0.85, 0.7], {
           extrapolateRight: "clamp",
@@ -129,7 +129,7 @@ export const FanScene: React.FC<FanSceneProps> = ({
           extrapolateRight: "clamp",
         }) * enterOpacity;
 
-        // 聚焦动画：当前页面放大并移到中心
+        // Focus animation: current page zooms in and moves to center
         let finalX = x;
         let finalY = y;
         let finalScale = baseScale;
@@ -140,7 +140,7 @@ export const FanScene: React.FC<FanSceneProps> = ({
         if (isCurrent && focusProgress > 0) {
           const targetScale = focusWidth / 500;
           const scaledPdfHeight = (500 / pdfAspectRatio) * targetScale;
-          // 基础位置 + 顶部边距
+          // Base position + top margin
           const topPosition = (scaledPdfHeight - videoHeight) / 2 + topMargin;
 
           finalX = interpolate(focusProgress, [0, 1], [x, 0]);
@@ -150,20 +150,20 @@ export const FanScene: React.FC<FanSceneProps> = ({
           finalOpacity = 1;
           zIndex = 200;
         } else if (focusProgress > 0) {
-          // 非当前页面：保留扇形但压暗，稍微后退
+          // Non-current pages: keep fan shape but dim, move back slightly
           finalOpacity = interpolate(focusProgress, [0, 1], [baseOpacity, 0.25]);
           finalScale = interpolate(focusProgress, [0, 1], [baseScale, baseScale * 0.9]);
-          // 稍微向下移动，让出空间
+          // Move down slightly to make room
           finalY = interpolate(focusProgress, [0, 1], [y, y + 50]);
         }
 
         const pdfRenderWidth = 500;
         const renderScale = isCurrent ? 2 : 1;
 
-        // 聚焦时使用 center center，扇形时使用 center bottom
+        // Use center center when focused, center bottom for fan
         const origin = isCurrent && focusProgress > 0.5 ? "center center" : "center bottom";
 
-        // 非聚焦页面在聚焦时添加暗色滤镜
+        // Add dark filter to non-focused pages when focusing
         const filterStyle = !isCurrent && focusProgress > 0
           ? `brightness(${interpolate(focusProgress, [0, 1], [1, 0.4])})`
           : "none";

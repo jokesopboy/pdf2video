@@ -21,7 +21,7 @@ export const AnnotationOverlay: React.FC<AnnotationOverlayProps> = ({
 
   if (annotations.length === 0) return null;
 
-  // 计算每个注释的位置信息
+  // Calculate position info for each annotation
   const annotationRects = annotations.map((annot) => {
     const [x1, y1, x2, y2] = annot.rect;
     const scaleX = pdfWidth / annot.pageWidth;
@@ -45,7 +45,7 @@ export const AnnotationOverlay: React.FC<AnnotationOverlayProps> = ({
         pointerEvents: "none",
       }}
     >
-      {/* 高亮动画：只使用边框和发光效果，不覆盖原有内容 */}
+      {/* Highlight animation: uses border and glow only, doesn't cover original content */}
       {annotations.map((annot, index) => {
         const rect = annotationRects[index];
         const animationDelay = startFrame + index * 5;
@@ -59,7 +59,7 @@ export const AnnotationOverlay: React.FC<AnnotationOverlayProps> = ({
         const scaleAnim = interpolate(progress, [0, 1], [1.1, 1]);
         const opacity = interpolate(progress, [0, 1], [0, 1]);
 
-        // 使用深色边框，与原有高亮颜色形成对比
+        // Use dark border to contrast with original highlight color
         const borderColor = annot.color
           ? `rgb(${Math.max(0, annot.color.r - 80)}, ${Math.max(0, annot.color.g - 80)}, ${Math.max(0, annot.color.b - 80)})`
           : "rgb(200, 150, 0)";
@@ -68,7 +68,7 @@ export const AnnotationOverlay: React.FC<AnnotationOverlayProps> = ({
           ? `rgba(${annot.color.r}, ${annot.color.g}, ${annot.color.b}, 0.8)`
           : "rgba(255, 200, 0, 0.8)";
 
-        // 脉冲发光效果
+        // Pulsing glow effect
         const pulsePhase = (frame - animationDelay) * 0.15;
         const glowIntensity = progress > 0.5 ? 15 + Math.sin(pulsePhase) * 8 : 15 * progress;
 

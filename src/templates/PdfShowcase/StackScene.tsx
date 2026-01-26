@@ -22,7 +22,7 @@ export const StackScene: React.FC<StackSceneProps> = ({
   const visiblePages = pages.slice(0, maxVisibleLayers);
   const reversedPages = [...visiblePages].reverse();
 
-  // 结尾场景的收拢动画
+  // Ending scene gather animation
   const gatherProgress = isEnding
     ? spring({
         frame,
@@ -31,17 +31,17 @@ export const StackScene: React.FC<StackSceneProps> = ({
       })
     : 0;
 
-  // 结尾场景：稍微缩小并移动到左侧
+  // Ending scene: slightly scale down and move to left
   const endingScale = isEnding
     ? interpolate(gatherProgress, [0, 1], [1, 0.85])
     : 1;
 
-  // 移动到左侧
+  // Move to left
   const endingOffsetX = isEnding
     ? interpolate(gatherProgress, [0, 1], [0, -300])
     : 0;
 
-  const endingOpacity = 1; // 不再淡出
+  const endingOpacity = 1; // No longer fades out
 
   return (
     <AbsoluteFill
@@ -53,7 +53,7 @@ export const StackScene: React.FC<StackSceneProps> = ({
       }}
     >
       {reversedPages.map((pageNum, index) => {
-        // 开场入场动画
+        // Opening entry animation
         const entryProgress = isEnding
           ? 1
           : spring({
@@ -68,10 +68,10 @@ export const StackScene: React.FC<StackSceneProps> = ({
         const baseRotation = (stackIndex - reversedPages.length / 2) * 1.5;
         const baseScale = 1 - stackIndex * 0.02;
 
-        // 结尾时卡片保持错落感并移动到左侧
-        const endingY = stackIndex * -6; // 保持垂直错落
-        const endingX = stackIndex * 8;  // 水平错落更明显
-        const endingRotation = (stackIndex - reversedPages.length / 2) * 2; // 保持轻微旋转
+        // Ending: cards maintain staggered look and move to left
+        const endingY = stackIndex * -6; // Keep vertical stagger
+        const endingX = stackIndex * 8;  // More horizontal stagger
+        const endingRotation = (stackIndex - reversedPages.length / 2) * 2; // Keep slight rotation
 
         const targetY = isEnding ? interpolate(gatherProgress, [0, 1], [baseY, endingY]) : baseY;
         const targetX = isEnding ? interpolate(gatherProgress, [0, 1], [baseX, endingX]) + endingOffsetX : baseX;

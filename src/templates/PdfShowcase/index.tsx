@@ -27,7 +27,7 @@ function generateScript(highlights: number[]): ScriptItem[] {
     }
   });
 
-  // 添加结尾场景 - 回到堆叠状态
+  // Add ending scene - return to stack state
   script.push({ type: "stack", duration: 60 });
 
   return script;
@@ -56,12 +56,22 @@ export const PdfShowcase: React.FC<PdfShowcaseProps> = ({
     if (pages && pages.length > 0) {
       return pages;
     }
-    // 如果有 highlights，使用 highlights 作为展示页面
+    // If highlights provided, use them as display pages
     if (highlights && highlights.length > 0) {
       return highlights;
     }
+    // Auto-extract pages from script if provided
+    if (customScript && customScript.length > 0) {
+      const scriptPages = customScript
+        .filter((item): item is typeof item & { page: number } => 'page' in item && typeof item.page === 'number')
+        .map(item => item.page);
+      if (scriptPages.length > 0) {
+        // Return unique pages in order of appearance
+        return [...new Set(scriptPages)];
+      }
+    }
     return Array.from({ length: totalPages }, (_, i) => i + 1);
-  }, [pages, highlights, totalPages]);
+  }, [pages, highlights, customScript, totalPages]);
 
   const script = useMemo(() => {
     if (customScript && customScript.length > 0) {
@@ -74,7 +84,7 @@ export const PdfShowcase: React.FC<PdfShowcaseProps> = ({
     return generateScript(defaultHighlights);
   }, [customScript, highlights, availablePages]);
 
-  // 计算高亮页面总数（用于进度指示）
+  // Calculate total highlight pages count (for progress indicator)
   const highlightCount = useMemo(() => {
     return script.filter(item => item.type === "focus" || item.type === "switch" || item.type === "fan").length;
   }, [script]);
@@ -126,15 +136,15 @@ export const PdfShowcase: React.FC<PdfShowcaseProps> = ({
     return firstNonStack?.from ?? 0;
   }, [sequences]);
 
-  // 检查是否是结尾的 stack 场景
+  // Check if current scene is the ending stack
   const isEndingStack = useMemo(() => {
     const lastSeq = sequences[sequences.length - 1];
     return lastSeq?.type === "stack" && frame >= lastSeq.from;
   }, [sequences, frame]);
 
-  // BGM 淡入淡出音量控制
-  const fadeInDuration = fps * 2; // 2秒淡入
-  const fadeOutDuration = fps * 2; // 2秒淡出
+  // BGM fade in/out volume control
+  const fadeInDuration = fps * 2; // 2 second fade in
+  const fadeOutDuration = fps * 2; // 2 second fade out
   const bgmVolume = interpolate(
     frame,
     [0, fadeInDuration, durationInFrames - fadeOutDuration, durationInFrames],
@@ -144,7 +154,7 @@ export const PdfShowcase: React.FC<PdfShowcaseProps> = ({
 
   return (
     <AbsoluteFill>
-      {/* 背景音乐 - 淡入淡出 */}
+      {/* Background music - fade in/out */}
       <Audio src={staticFile("background.mp3")} volume={bgmVolume} />
       <GridBackground
         sceneType={currentScene.type}
@@ -152,7 +162,7 @@ export const PdfShowcase: React.FC<PdfShowcaseProps> = ({
       />
       {sequences.map((seq, seqIndex) => {
         if (seq.type === "stack") {
-          // 判断是开场还是结尾的 stack
+          // Determine if this is opening or ending stack
           const isEnding = seqIndex === sequences.length - 1 && seqIndex > 0;
           return (
             <Sequence key={seq.index} from={seq.from} durationInFrames={seq.duration}>
@@ -170,7 +180,7 @@ export const PdfShowcase: React.FC<PdfShowcaseProps> = ({
         }
 
         if (seq.type === "focus") {
-          const sceneTitle = seq.title || pageTitles?.[String(seq.page)] || `第 ${seq.page} 页`;
+          const sceneTitle = seq.title || pageTitles?.[String(seq.page)] || `Page ${seq.page}`;
           const sceneDescription = pageDescriptions?.[String(seq.page)];
 
           return (
@@ -193,7 +203,7 @@ export const PdfShowcase: React.FC<PdfShowcaseProps> = ({
 
         if (seq.type === "switch") {
           const fromPage = seq.lastFocusedPage ?? availablePages[0];
-          const sceneTitle = seq.title || pageTitles?.[String(seq.page)] || `第 ${seq.page} 页`;
+          const sceneTitle = seq.title || pageTitles?.[String(seq.page)] || `Page ${seq.page}`;
           const sceneDescription = pageDescriptions?.[String(seq.page)];
           return (
             <Sequence key={seq.index} from={seq.from} durationInFrames={seq.duration}>
@@ -217,7 +227,7 @@ export const PdfShowcase: React.FC<PdfShowcaseProps> = ({
 
         if (seq.type === "fan") {
           const previousPage = seq.lastFocusedPage;
-          const sceneTitle = seq.title || pageTitles?.[String(seq.page)] || `第 ${seq.page} 页`;
+          const sceneTitle = seq.title || pageTitles?.[String(seq.page)] || `Page ${seq.page}`;
           const sceneDescription = pageDescriptions?.[String(seq.page)];
           return (
             <Sequence key={seq.index} from={seq.from} durationInFrames={seq.duration}>

@@ -38,7 +38,7 @@ export const PdfPage: React.FC<PdfPageProps> = ({
   );
 
   const handlePageRenderSuccess = useCallback(() => {
-    // 延迟确保 canvas 内容完全绘制完成（包括图片）
+    // Delay to ensure canvas content is fully rendered (including images)
     setTimeout(() => {
       if (!renderCompleted.current) {
         renderCompleted.current = true;
@@ -58,7 +58,7 @@ export const PdfPage: React.FC<PdfPageProps> = ({
 
   const pdfSrc = src.startsWith("/") ? staticFile(src.slice(1)) : src;
 
-  // 使用 devicePixelRatio 提高渲染分辨率，保持布局尺寸不变
+  // Use devicePixelRatio to improve render resolution while keeping layout size unchanged
   return (
     <div style={{ opacity: isVisible ? 1 : 0 }}>
       <Document

@@ -27,11 +27,11 @@ export const FocusScene: React.FC<FocusSceneProps> = ({
   const reversedPages = [...visiblePages].reverse();
   const focusIndexInReversed = reversedPages.indexOf(focusPage);
 
-  // 聚焦页面在堆叠中的位置（0 = 最顶层）
+  // Focus page position in stack (0 = top layer)
   const focusStackIndex = reversedPages.length - 1 - focusIndexInReversed;
   const isTopCard = focusStackIndex === 0;
 
-  // 第一阶段：抽出动画（如果不是最顶层的卡片）
+  // Phase 1: Extract animation (if not the top card)
   const extractDelay = 5;
   const extractProgress = spring({
     frame: frame - extractDelay,
@@ -39,7 +39,7 @@ export const FocusScene: React.FC<FocusSceneProps> = ({
     config: { damping: 80, stiffness: 100 },
   });
 
-  // 第二阶段：聚焦动画
+  // Phase 2: Focus animation
   const focusDelay = isTopCard ? 10 : 25;
   const focusProgress = spring({
     frame: frame - focusDelay,
@@ -48,19 +48,19 @@ export const FocusScene: React.FC<FocusSceneProps> = ({
   });
 
   const pdfHeight = focusWidth / pdfAspectRatio;
-  // 顶部边距
+  // Top margin
   const topMargin = 80;
   const maxScrollDistance = Math.max(0, pdfHeight - videoHeight + 100 + topMargin);
 
-  // 滚动在底部描述显示到 60% 时开始
+  // Scroll starts when bottom description reaches 60%
   const scrollStartFrame = isTopCard ? 55 : 65;
 
-  // 呼吸效果：滚动前轻微上下浮动
+  // Breathing effect: slight vertical float before scrolling
   const breatheOffset = frame < scrollStartFrame
     ? Math.sin(frame * 0.06) * 8
     : 0;
 
-  // 滚动偏移（缩短滚动时间，留出结尾停顿，带回弹效果）
+  // Scroll offset (shortened scroll time, leave pause at end, with bounce effect)
   const scrollDuration = 50;
   const scrollOffset = interpolate(
     frame,
@@ -69,7 +69,7 @@ export const FocusScene: React.FC<FocusSceneProps> = ({
     { extrapolateLeft: "clamp", extrapolateRight: "clamp", easing: Easing.out(Easing.back(1.2)) }
   );
 
-  // 第三阶段：收回动画 - 结束前 25 帧开始收回到堆叠状态
+  // Phase 3: Collapse animation - starts 25 frames before end, returns to stack state
   const collapseStartFrame = duration - 25;
   const collapseProgress = spring({
     frame: frame - collapseStartFrame,
@@ -91,7 +91,7 @@ export const FocusScene: React.FC<FocusSceneProps> = ({
         const isFocus = pageNum === focusPage;
         const stackIndex = reversedPages.length - 1 - index;
 
-        // 堆叠状态的基础位置（与 StackScene 一致）
+        // Base position for stack state (consistent with StackScene)
         const baseY = stackIndex * -8;
         const baseX = stackIndex * 4;
         const baseRotation = (stackIndex - reversedPages.length / 2) * 1.5;
@@ -105,33 +105,33 @@ export const FocusScene: React.FC<FocusSceneProps> = ({
         let zIndex = index;
 
         if (isFocus) {
-          // 聚焦页面的动画
+          // Focus page animation
           const targetScale = focusWidth / 500;
           const scaledPdfHeight = (500 / pdfAspectRatio) * targetScale;
-          // 基础位置 + 顶部边距（让页面不顶头）
+          // Base position + top margin (so page doesn't touch top)
           const topPosition = (scaledPdfHeight - videoHeight) / 2 + topMargin;
 
           if (isCollapsing) {
-            // 收回阶段：从滚动位置收回到堆叠状态
+            // Collapse phase: return from scrolled position to stack state
             const scrolledPosition = topPosition - maxScrollDistance;
             translateX = interpolate(collapseProgress, [0, 1], [0, baseX]);
             translateY = interpolate(collapseProgress, [0, 1], [scrolledPosition, baseY]);
             rotation = interpolate(collapseProgress, [0, 1], [0, baseRotation]);
             currentScale = interpolate(collapseProgress, [0, 1], [targetScale, baseScale]);
           } else if (isTopCard) {
-            // 最顶层卡片：直接放大到中心
+            // Top card: scale up directly to center
             translateX = interpolate(focusProgress, [0, 1], [baseX, 0]);
             translateY = interpolate(focusProgress, [0, 1], [baseY, topPosition]) - scrollOffset + breatheOffset;
             rotation = interpolate(focusProgress, [0, 1], [baseRotation, 0]);
             currentScale = interpolate(focusProgress, [0, 1], [baseScale, targetScale]);
           } else {
-            // 非顶层卡片：先抽出，再聚焦
-            // 阶段1：向右上方抽出
+            // Non-top card: extract first, then focus
+            // Phase 1: extract to upper right
             const extractX = interpolate(extractProgress, [0, 1], [baseX, 150]);
             const extractY = interpolate(extractProgress, [0, 1], [baseY, -100]);
             const extractRotation = interpolate(extractProgress, [0, 1], [baseRotation, -5]);
 
-            // 阶段2：移到中心并放大
+            // Phase 2: move to center and scale up
             translateX = interpolate(focusProgress, [0, 1], [extractX, 0]);
             translateY = interpolate(focusProgress, [0, 1], [extractY, topPosition]) - scrollOffset + breatheOffset;
             rotation = interpolate(focusProgress, [0, 1], [extractRotation, 0]);
@@ -139,9 +139,9 @@ export const FocusScene: React.FC<FocusSceneProps> = ({
           }
           zIndex = 100;
         } else {
-          // 非聚焦页面的动画
+          // Non-focus page animation
           if (isCollapsing) {
-            // 收回阶段：从散开位置收回到堆叠状态
+            // Collapse phase: return from spread position to stack state
             const relativeIndex = index - focusIndexInReversed;
             const isLeft = relativeIndex % 2 !== 0;
             const baseDirection = isLeft ? -1 : 1;
@@ -160,7 +160,7 @@ export const FocusScene: React.FC<FocusSceneProps> = ({
             currentScale = interpolate(collapseProgress, [0, 1], [0.6, baseScale]);
             opacity = interpolate(collapseProgress, [0, 1], [0, 1]);
           } else {
-            // 正常散开动画
+            // Normal spread animation
             const isAboveFocus = stackIndex < focusStackIndex;
             const relativeIndex = index - focusIndexInReversed;
 

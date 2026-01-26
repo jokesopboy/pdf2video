@@ -30,7 +30,7 @@ export const SwitchScene: React.FC<SwitchSceneProps> = ({
   const topPosition = (scaledPdfHeight - videoHeight) / 2 + topMargin;
   const maxScrollDistance = Math.max(0, pdfHeight - videoHeight + 100 + topMargin);
 
-  // 阶段1：切换动画 - 上一页滑出，下一页滑入（使用平滑缓动）
+  // Phase 1: Switch animation - previous page slides out, next page slides in (smooth easing)
   const switchDuration = 25;
   const switchProgress = interpolate(
     frame,
@@ -39,7 +39,7 @@ export const SwitchScene: React.FC<SwitchSceneProps> = ({
     { extrapolateLeft: "clamp", extrapolateRight: "clamp", easing: Easing.out(Easing.cubic) }
   );
 
-  // 阶段2：滚动（描述显示到 60% 时开始）
+  // Phase 2: Scroll (starts when description reaches 60%)
   const scrollStartFrame = 70;
   const scrollDuration = 50;
   const scrollOffset = interpolate(
@@ -49,12 +49,12 @@ export const SwitchScene: React.FC<SwitchSceneProps> = ({
     { extrapolateLeft: "clamp", extrapolateRight: "clamp", easing: Easing.out(Easing.back(1.2)) }
   );
 
-  // 呼吸效果：滚动前轻微上下浮动
+  // Breathing effect: slight vertical float before scrolling
   const breatheOffset = frame < scrollStartFrame && frame > switchDuration
     ? Math.sin(frame * 0.06) * 8
     : 0;
 
-  // 阶段3：收回动画 - 使用平滑缓动替代 spring
+  // Phase 3: Collapse animation - using smooth easing instead of spring
   const collapseStartFrame = duration - 20;
   const collapseDuration = 18;
   const collapseProgress = interpolate(
@@ -64,24 +64,24 @@ export const SwitchScene: React.FC<SwitchSceneProps> = ({
     { extrapolateLeft: "clamp", extrapolateRight: "clamp", easing: Easing.inOut(Easing.cubic) }
   );
 
-  // 堆叠状态的目标位置（居中、缩小）
+  // Target position for stack state (centered, scaled down)
   const stackScale = 1;
   const stackY = 0;
 
-  // 上一页：从聚焦位置向上滑出
+  // Previous page: slides up from focus position
   const fromPageY = interpolate(switchProgress, [0, 1], [topPosition, -videoHeight * 0.6]);
   const fromPageOpacity = interpolate(switchProgress, [0, 0.6, 1], [1, 0.5, 0]);
 
-  // 下一页的位置和缩放（考虑收回动画）
+  // Next page position and scale (considering collapse animation)
   let toPageY: number;
   let toPageScale: number;
 
   if (frame < collapseStartFrame) {
-    // 正常展示阶段
+    // Normal display phase
     toPageY = interpolate(switchProgress, [0, 1], [videoHeight * 0.6, topPosition]) - scrollOffset + breatheOffset;
     toPageScale = focusScale;
   } else {
-    // 收回阶段：从当前滚动位置收回到居中堆叠状态
+    // Collapse phase: return from scrolled position to centered stack state
     const scrolledPosition = topPosition - maxScrollDistance;
     toPageY = interpolate(collapseProgress, [0, 1], [scrolledPosition, stackY]);
     toPageScale = interpolate(collapseProgress, [0, 1], [focusScale, stackScale]);
@@ -98,7 +98,7 @@ export const SwitchScene: React.FC<SwitchSceneProps> = ({
         alignItems: "center",
       }}
     >
-      {/* 上一页 - 向上滑出 */}
+      {/* Previous page - slides up */}
       <div
         style={{
           position: "absolute",
@@ -113,7 +113,7 @@ export const SwitchScene: React.FC<SwitchSceneProps> = ({
         <PdfPage src={src} pageNumber={fromPage} width={pdfRenderWidth} renderScale={1} />
       </div>
 
-      {/* 下一页 - 从下方滑入，结束时收回 */}
+      {/* Next page - slides in from bottom, collapses at end */}
       <div
         style={{
           position: "absolute",

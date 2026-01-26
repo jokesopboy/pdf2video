@@ -18,7 +18,7 @@ export const BottomInfo: React.FC<BottomInfoProps> = ({
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
 
-  // 整体入场动画
+  // Overall entry animation
   const enterProgress = spring({
     frame: frame - enterDelay,
     fps,
@@ -28,7 +28,7 @@ export const BottomInfo: React.FC<BottomInfoProps> = ({
   const slideY = interpolate(enterProgress, [0, 1], [40, 0]);
   const opacity = interpolate(enterProgress, [0, 1], [0, 1]);
 
-  // 打字机效果
+  // Typewriter effect
   const charsPerFrame = 1.8;
   const typingStartFrame = enterDelay + 20;
   const typedChars = Math.floor((frame - typingStartFrame) * charsPerFrame);
@@ -40,7 +40,7 @@ export const BottomInfo: React.FC<BottomInfoProps> = ({
 
   const isTypingComplete = description ? displayText.length >= description.length : true;
 
-  // 光标闪烁（打字中）
+  // Cursor blink (while typing)
   const cursorVisible =
     description &&
     Math.floor(frame / 8) % 2 === 0 &&
@@ -62,7 +62,7 @@ export const BottomInfo: React.FC<BottomInfoProps> = ({
         zIndex: 1000,
       }}
     >
-      {/* 统一卡片容器 */}
+      {/* Unified card container */}
       <div
         style={{
           display: "flex",
@@ -73,7 +73,7 @@ export const BottomInfo: React.FC<BottomInfoProps> = ({
           boxShadow: "0 4px 20px rgba(0, 0, 0, 0.3)",
         }}
       >
-        {/* 左侧竖线装饰 */}
+        {/* Left vertical line decoration */}
         <div
           style={{
             width: 5,
@@ -82,7 +82,7 @@ export const BottomInfo: React.FC<BottomInfoProps> = ({
           }}
         />
 
-        {/* 内容区域 */}
+        {/* Content area */}
         <div
           style={{
             padding: "16px 24px",
@@ -91,7 +91,7 @@ export const BottomInfo: React.FC<BottomInfoProps> = ({
             gap: 8,
           }}
         >
-          {/* 标题行：标题 + 进度指示器 */}
+          {/* Title row: title + progress indicator */}
           <div
             style={{
               display: "flex",
@@ -110,7 +110,7 @@ export const BottomInfo: React.FC<BottomInfoProps> = ({
               {title}
             </span>
 
-            {/* 进度指示器 */}
+            {/* Progress indicator */}
             {totalCount > 1 && (
               <div
                 style={{
@@ -136,7 +136,7 @@ export const BottomInfo: React.FC<BottomInfoProps> = ({
             )}
           </div>
 
-          {/* 描述（打字机效果） */}
+          {/* Description (typewriter effect) */}
           {description && (
             <p
               style={{

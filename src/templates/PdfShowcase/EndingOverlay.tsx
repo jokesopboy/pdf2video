@@ -12,7 +12,7 @@ export const EndingOverlay: React.FC<EndingOverlayProps> = ({
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
 
-  // 延迟入场，等 PDF 移动到左侧后再显示
+  // Delayed entry, wait for PDF to move to the left before showing
   const enterDelay = 25;
   const enterProgress = spring({
     frame: frame - enterDelay,
@@ -38,7 +38,7 @@ export const EndingOverlay: React.FC<EndingOverlayProps> = ({
         pointerEvents: "none",
       }}
     >
-      {/* 右侧文字区域 */}
+      {/* Right side text area */}
       <div
         style={{
           opacity,
@@ -49,7 +49,7 @@ export const EndingOverlay: React.FC<EndingOverlayProps> = ({
           maxWidth: 600,
         }}
       >
-        {/* 感谢观看 */}
+        {/* Thanks for watching */}
         <div
           style={{
             fontSize: 28,
@@ -60,10 +60,10 @@ export const EndingOverlay: React.FC<EndingOverlayProps> = ({
             letterSpacing: 6,
           }}
         >
-          感谢观看
+          Thanks for watching
         </div>
 
-        {/* 标题 */}
+        {/* Title */}
         {title && (
           <div
             style={{
@@ -80,7 +80,7 @@ export const EndingOverlay: React.FC<EndingOverlayProps> = ({
           </div>
         )}
 
-        {/* 副标题 */}
+        {/* Subtitle */}
         {subtitle && (
           <div
             style={{
@@ -95,7 +95,7 @@ export const EndingOverlay: React.FC<EndingOverlayProps> = ({
           </div>
         )}
 
-        {/* 装饰线 */}
+        {/* Decorative line */}
         <div
           style={{
             width: interpolate(enterProgress, [0, 1], [0, 120]),

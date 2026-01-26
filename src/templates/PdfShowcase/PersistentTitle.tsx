@@ -31,11 +31,11 @@ export const PersistentTitle: React.FC<PersistentTitleProps> = ({
 
   const currentMoveProgress = frame < firstFocusFrame ? 0 : moveProgress;
 
-  // 中心位置
+  // Center position
   const centerX = width / 2;
   const centerY = height / 2;
 
-  // 角落位置（右上角，边距50px，和底部一致）
+  // Corner position (top right, 50px margin, consistent with bottom)
   const cornerX = width - 50;
   const cornerY = 50;
 
@@ -57,18 +57,18 @@ export const PersistentTitle: React.FC<PersistentTitleProps> = ({
     extrapolateRight: "clamp",
   }));
 
-  // 中心大标题的透明度（移动时淡出）
+  // Center title opacity (fades out when moving)
   const centerTitleFadeOut = frame < firstFocusFrame ? 1 : interpolate(moveProgress, [0, 0.4], [1, 0], {
     extrapolateRight: "clamp",
   });
 
-  // 角落卡片标题的透明度（移动时淡入）
+  // Corner title opacity (fades in when moving)
   const cornerTitleFadeIn = frame < firstFocusFrame ? 0 : interpolate(moveProgress, [0.3, 0.7], [0, 1], {
     extrapolateLeft: "clamp",
     extrapolateRight: "clamp",
   });
 
-  // 角落卡片的滑入动画
+  // Corner card slide-in animation
   const cornerSlideX = interpolate(cornerTitleFadeIn, [0, 1], [30, 0]);
 
   return (
@@ -81,7 +81,7 @@ export const PersistentTitle: React.FC<PersistentTitleProps> = ({
         }}
       />
 
-      {/* 中心大标题 - 移动时淡出 */}
+      {/* Center title - fades out when moving */}
       <div
         style={{
           position: "absolute",
@@ -134,7 +134,7 @@ export const PersistentTitle: React.FC<PersistentTitleProps> = ({
         )}
       </div>
 
-      {/* 右上角卡片标题 - 移动时淡入，样式和底部一致 */}
+      {/* Top right corner title - fades in when moving, style matches bottom */}
       <div
         style={{
           position: "absolute",
